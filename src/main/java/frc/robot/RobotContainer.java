@@ -8,8 +8,12 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -18,9 +22,10 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.ElevatorSubsystem;
 
 public class RobotContainer {
-    private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+    public double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
     /* Setting up bindings for necessary control of the swerve drive platform */
@@ -33,10 +38,25 @@ public class RobotContainer {
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
     private final CommandXboxController joystick = new CommandXboxController(0);
+    private final CommandXboxController joystick2 = new CommandXboxController(1);
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
+    public final ElevatorSubsystem elevator = new ElevatorSubsystem();
+
+    //private final SendableChooser<Command> autoChooser;
+
     public RobotContainer() {
+        // Raises Elevator to Level 4
+        NamedCommands.registerCommand("Raise L4", elevator.setPositionwithThreshold(4));
+        // Raises Elevator to Level 0
+        NamedCommands.registerCommand("Raise L0", elevator.setPositionwithThreshold(0));
+
+        elevator.setDefaultCommand(elevator.setOpenLoop(() -> 0.2));
+
+        //autoChooser = AutoBuilder.buildAutoChooser("Tests");
+        //SmartDashboard.putData("Auto Mode", autoChooser);
+
         configureBindings();
     }
 
@@ -75,6 +95,18 @@ public class RobotContainer {
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         drivetrain.registerTelemetry(logger::telemeterize);
+
+        //elevatorController.a().onTrue(drivetrain.runOnce(() -> eleSubsystem.setPositionwithThreshold(10)));
+
+        joystick2.b().onTrue(elevator.setPosition(0));
+        // Level 1
+        joystick2.rightTrigger().onTrue(elevator.setPosition(1));
+        // Level 2
+        joystick2.a().onTrue(elevator.setPosition(2));
+        // Level 3
+        joystick2.x().onTrue(elevator.setPosition(3));
+        // Level 4
+        joystick2.y().onTrue(elevator.setPosition(4));
     }
 
     public Command getAutonomousCommand() {
