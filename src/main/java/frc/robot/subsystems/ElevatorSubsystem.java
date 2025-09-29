@@ -31,7 +31,12 @@
             backElevator.setControl(new Follower(frontElevator.getDeviceID(), false));
             // Make sure elevator is at base postion each time rio restarts.
             frontElevator.setPosition(0, 100);
-
+            
+            //frontElevator.setControl(new DutyCycleOut(0.2d));
+            
+            frontElevator.getPosition().setUpdateFrequency(100);
+            frontElevator.optimizeBusUtilization();
+            
             // Applies necessary configuration for each motor
             configureMotor(frontElevator);
             configureMotor(backElevator);
@@ -95,6 +100,7 @@
         public Command setPosition(int targetPos){
             pos = targetPos;
             SmartDashboard.putNumber("Elevator Level Index", pos);
+            //return setOpenLoop(() -> 2d);
             return setCloseLoop(() -> positions[targetPos]);
         }
 

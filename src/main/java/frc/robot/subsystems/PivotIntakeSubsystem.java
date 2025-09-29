@@ -21,7 +21,7 @@ public class PivotIntakeSubsystem extends SubsystemBase {
     private final TalonFX pivotMotor = new TalonFX(PivotIntakeConstants.PIVOT_MOTOR_ID);
     private final TalonFX intakeWheelMotor = new TalonFX(PivotIntakeConstants.INTAKE_WHEEL_MOTOR_ID);
     private final CANcoder pivotEncoder = new CANcoder(PivotIntakeConstants.PIVOT_ENCODER_ID);
-    private final CANrange coralSensor = new CANrange(PivotIntakeConstants.CORAL_SENSOR_ID);
+    //private final CANrange coralSensor = new CANrange(PivotIntakeConstants.CORAL_SENSOR_ID);
     
     // PID controller for pivot positioning
     private final PIDController pivotPID = new PIDController(
@@ -78,6 +78,7 @@ public class PivotIntakeSubsystem extends SubsystemBase {
     // Set the pivot position setpoint
     public void setPivotSetpoint(double setpoint) {
         currentSetpoint = MathUtil.clamp(setpoint, -0.02, 0.56);
+        //currentSetpoint = setpoint;
         pivotPID.setSetpoint(currentSetpoint);
     }
     
@@ -98,12 +99,14 @@ public class PivotIntakeSubsystem extends SubsystemBase {
     
     // Check if coral is detected by CanRange sensor
     public boolean isCoralDetected() {
-        return coralSensor.getDistance().getValueAsDouble() < PivotIntakeConstants.CORAL_DETECTED_DISTANCE_MM;
+        //return coralSensor.getDistance().getValueAsDouble() < PivotIntakeConstants.CORAL_DETECTED_DISTANCE_MM;
+        return false;
     }
     
     // Get the distance reading from CanRange sensor
     public double getCoralDistance() {
-        return coralSensor.getDistance().getValueAsDouble();
+        //return coralSensor.getDistance().getValueAsDouble();
+        return 0d;
     }
     
     // COMMAND METHODS

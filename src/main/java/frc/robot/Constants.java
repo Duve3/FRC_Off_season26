@@ -21,13 +21,13 @@ public final class Constants {
     // Pivot Intake Constants - These things should be adjusted to actual vals
     public static class PivotIntakeConstants {
         // Motor CAN IDs
-        public static final int PIVOT_MOTOR_ID = 16;
+        public static final int PIVOT_MOTOR_ID = 20;
         public static final int INTAKE_WHEEL_MOTOR_ID = 18;
-        public static final int PIVOT_ENCODER_ID = 17;
-        public static final int CORAL_SENSOR_ID = 19;
+        public static final int PIVOT_ENCODER_ID = 21;
+        //public static final int CORAL_SENSOR_ID = 19;
         
         // Pivot positions (in rotations) - 200° total range
-        public static final double STOWED_POSITION = 0.0;          // Home position
+        public static final double STOWED_POSITION = 0;          // Home position
         public static final double INTAKE_POSITION = 0.55;         // Ground collection
         public static final double REEF_SCORING_POSITION = 0.35;   // Reef scoring position
         
@@ -42,7 +42,7 @@ public final class Constants {
         public static final double PIVOT_KP = 3.0;
         public static final double PIVOT_KI = 0.0;
         public static final double PIVOT_KD = 0.1;
-        public static final double PIVOT_TOLERANCE = 0.02;
+        public static final double PIVOT_TOLERANCE = 0.2;
     }
 
     // Returns true if the value is inside the list

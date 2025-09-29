@@ -22,11 +22,14 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.DumpRollerSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.PivotIntakeSubsystem;
 
 public class RobotContainer {
-    public double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
-    private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
+    public double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond) * 0.3; // kSpeedAt12Volts desired top speed
+    private double MaxAngularRate = RotationsPerSecond.of(1.5
+    ).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -38,21 +41,24 @@ public class RobotContainer {
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
     private final CommandXboxController joystick = new CommandXboxController(0);
-    private final CommandXboxController joystick2 = new CommandXboxController(1);
+    private final CommandXboxController joystick2 = new CommandXboxController(
+        1);
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
     public final ElevatorSubsystem elevator = new ElevatorSubsystem();
+    public final PivotIntakeSubsystem pivotSub = new PivotIntakeSubsystem();
+    public final DumpRollerSubsystem roller = new DumpRollerSubsystem();
 
     //private final SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
         // Raises Elevator to Level 4
-        NamedCommands.registerCommand("Raise L4", elevator.setPositionwithThreshold(4));
+        //NamedCommands.registerCommand("Raise L4", elevator.setPositionwithThreshold(4));
         // Raises Elevator to Level 0
-        NamedCommands.registerCommand("Raise L0", elevator.setPositionwithThreshold(0));
+        //NamedCommands.registerCommand("Raise L0", elevator.setPositionwithThreshold(0));
 
-        elevator.setDefaultCommand(elevator.setOpenLoop(() -> 0.2));
+        //elevator.setDefaultCommand(elevator.setOpenLoop(() -> 0.2));
 
         //autoChooser = AutoBuilder.buildAutoChooser("Tests");
         //SmartDashboard.putData("Auto Mode", autoChooser);
@@ -98,15 +104,15 @@ public class RobotContainer {
 
         //elevatorController.a().onTrue(drivetrain.runOnce(() -> eleSubsystem.setPositionwithThreshold(10)));
 
-        joystick2.b().onTrue(elevator.setPosition(0));
+        //joystick2.b().onTrue(elevator.setPosition(0));
         // Level 1
-        joystick2.rightTrigger().onTrue(elevator.setPosition(1));
+        joystick2.rightTrigger().onTrue(drivetrain.runOnce(() -> pivotSub.setPivotSetpoint(0.5d)));
         // Level 2
-        joystick2.a().onTrue(elevator.setPosition(2));
+        joystick2.a().onTrue(drivetrain.runOnce(() -> roller.dropCoral(5)));
         // Level 3
-        joystick2.x().onTrue(elevator.setPosition(3));
+        joystick2.x().onTrue(drivetrain.runOnce(() -> elevator.setPosition(3)));
         // Level 4
-        joystick2.y().onTrue(elevator.setPosition(4));
+        joystick2.y().onTrue(drivetrain.runOnce(() -> elevator.setPosition(4)));
     }
 
     public Command getAutonomousCommand() {

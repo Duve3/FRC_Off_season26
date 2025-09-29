@@ -51,7 +51,7 @@ public class IntakeCoral extends Command{
         dumpRoller.coralMotor.set(0.2);
 
         // Gets current motor draw
-        double current = dumpRoller.coralMotor.getOutputCurrent();
+        double current = dumpRoller.coralMotor.getStatorCurrent().getValueAsDouble();
         //System.out.println("Current: " + current);
 
         // Maintains buffer size by only tracking the last few values

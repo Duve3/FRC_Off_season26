@@ -7,13 +7,17 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.*;
+import com.ctre.phoenix6.hardware.*;
+import com.ctre.phoenix6.signals.GravityTypeValue;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public class DumpRollerSubsystem extends SubsystemBase{
     
     // Initializes the motor
-    public SparkMax coralMotor = new SparkMax(2, MotorType.kBrushless);
+    public TalonFX coralMotor = new TalonFX(19, "CANivore");
     private DigitalInput coralSensor;
     public Timer a_timer = new Timer();
     // Indicates if the launcher is in action
@@ -67,7 +71,7 @@ public class DumpRollerSubsystem extends SubsystemBase{
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Coral Motor Current", coralMotor.getOutputCurrent());
+        SmartDashboard.putNumber("Coral Motor Current", coralMotor.getStatorCurrent().getValueAsDouble());
         SmartDashboard.putBoolean("Intake Sensor", coralSensor.get());
     }
 }
