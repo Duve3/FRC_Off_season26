@@ -1,25 +1,18 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.*;
-import com.ctre.phoenix6.hardware.*;
-import com.ctre.phoenix6.signals.GravityTypeValue;
-import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.hardware.TalonFX;
 
-public class DumpRollerSubsystem extends SubsystemBase{
-    
+public class DumpRollerSubsystem extends SubsystemBase {
+
     // Initializes the motor
     public TalonFX coralMotor = new TalonFX(19, "CANivore");
     private DigitalInput coralSensor;
-    public Timer a_timer = new Timer();
     // Indicates if the launcher is in action
     public Boolean isRunning = false;
     // Rotation power
@@ -36,37 +29,35 @@ public class DumpRollerSubsystem extends SubsystemBase{
     }
 
     // Outtakes the coral
-    public Command dropCoral(double voltage){
+    public Command dropCoral(double voltage) {
         return Commands.run(() -> coralMotor.set(voltage * power), this);
     }
-    
+
     // Holds the motor
-    public Command keepCoral(){
+    public Command keepCoral() {
         return Commands.run(() -> coralMotor.set(0), this);
     }
 
     // Returns the sensor input, If a coral was found
     public boolean getSensorInput() {
         return coralSensor.get();
-        }
+    }
 
     // Controls the position of the coral
-    public Command PrepareCoral(boolean out){
+    public Command PrepareCoral(boolean out) {
         // Sticks the coral out
-        if (out){
+        if (out) {
             return Commands.sequence(
-                dropCoral(0.15).withTimeout(0.25),
-                keepCoral().withTimeout(0.1)
-            );
+                    dropCoral(0.15).withTimeout(0.25),
+                    keepCoral().withTimeout(0.1));
         }
         // Pushes the coral back inside
-        else{
+        else {
             return Commands.sequence(
-                dropCoral(-0.2).withTimeout(0.25),
-                keepCoral().withTimeout(0.1)
-            );
+                    dropCoral(-0.2).withTimeout(0.25),
+                    keepCoral().withTimeout(0.1));
         }
-        
+
     }
 
     @Override
