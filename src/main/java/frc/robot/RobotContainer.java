@@ -106,7 +106,7 @@ public class RobotContainer {
 
         //joystick2.b().onTrue(elevator.setPosition(0));
         // Level 1
-        joystick2.rightTrigger().onTrue(drivetrain.runOnce(() -> pivotSub.setPivotSetpoint(0.5d)));
+        joystick2.rightTrigger().onTrue(drivetrain.runOnce(() -> pivotSub.setPivotSetpoint(0.015d)));
         // Level 2
         joystick2.a().onTrue(drivetrain.runOnce(() -> roller.dropCoral(5)));
         // Level 3

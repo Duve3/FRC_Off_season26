@@ -17,7 +17,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 public class DumpRollerSubsystem extends SubsystemBase{
     
     // Initializes the motor
-    public TalonFX coralMotor = new TalonFX(19, "CANivore");
+    public TalonFX coralMotor = new TalonFX(19, "rio");
     private DigitalInput coralSensor;
     public Timer a_timer = new Timer();
     // Indicates if the launcher is in action

@@ -27,7 +27,7 @@ public final class Constants {
         //public static final int CORAL_SENSOR_ID = 19;
         
         // Pivot positions (in rotations) - 200° total range
-        public static final double STOWED_POSITION = 0;          // Home position
+        public static final double STOWED_POSITION = 0.005;          // Home position
         public static final double INTAKE_POSITION = 0.55;         // Ground collection
         public static final double REEF_SCORING_POSITION = 0.35;   // Reef scoring position
         
