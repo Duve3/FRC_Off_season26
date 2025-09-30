@@ -14,8 +14,8 @@
 
     public class ElevatorSubsystem extends SubsystemBase{
         // Declares the two motors controling the elevator
-        private final TalonFX backElevator = new TalonFX(14, "CANivore");
-        private final TalonFX frontElevator = new TalonFX(15, "CANivore");
+        private final TalonFX backElevator = new TalonFX(15, "canivore");
+        private final TalonFX frontElevator = new TalonFX(14, "canivore");
         // Defines motionMagic stuff(allows the elevator to move smoothly)
         private final MotionMagicVoltage motionMagic = new MotionMagicVoltage(0).withSlot(0);
         // Defines a static voltage for the elevator
@@ -100,8 +100,8 @@
         public Command setPosition(int targetPos){
             pos = targetPos;
             SmartDashboard.putNumber("Elevator Level Index", pos);
-            //return setOpenLoop(() -> 2d);
-            return setCloseLoop(() -> positions[targetPos]);
+            return setOpenLoop(() -> 12d);
+            //return setCloseLoop(() -> positions[targetPos]);
         }
 
         /** Sets the position of both motors.

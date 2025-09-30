@@ -11,7 +11,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 public class DumpRollerSubsystem extends SubsystemBase {
 
     // Initializes the motor
-    public TalonFX coralMotor = new TalonFX(19, "CANivore");
+    public TalonFX coralMotor = new TalonFX(19, "rio");
     private DigitalInput coralSensor;
     // Indicates if the launcher is in action
     public Boolean isRunning = false;

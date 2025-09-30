@@ -51,14 +51,14 @@ public class PivotIntakeSubsystem extends SubsystemBase {
         config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
         
         // Current limits for pivot motor
-        config.CurrentLimits.SupplyCurrentLimit = 30;
+        config.CurrentLimits.SupplyCurrentLimit = 40;
         config.CurrentLimits.SupplyCurrentLimitEnable = true;
         
         // Limits to prevent over-rotation
-        config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 0.56; // Slightly past intake position
-        config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-        config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = -0.02; // Slightly past stowed
-        config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
+        //config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 0.56; // Slightly past intake position
+        //config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
+        //config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = -0.02; // Slightly past stowed
+        //config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
         
         pivotMotor.getConfigurator().apply(config);
     }
@@ -77,8 +77,8 @@ public class PivotIntakeSubsystem extends SubsystemBase {
     
     // Set the pivot position setpoint
     public void setPivotSetpoint(double setpoint) {
-        currentSetpoint = MathUtil.clamp(setpoint, -0.02, 0.56);
-        //currentSetpoint = setpoint;
+        //currentSetpoint = MathUtil.clamp(setpoint, -0.44, 0);
+        currentSetpoint = setpoint;
         pivotPID.setSetpoint(currentSetpoint);
     }
     
@@ -104,10 +104,10 @@ public class PivotIntakeSubsystem extends SubsystemBase {
     }
     
     // Get the distance reading from CanRange sensor
-    public double getCoralDistance() {
+    //public double getCoralDistance() {
         //return coralSensor.getDistance().getValueAsDouble();
-        return 0d;
-    }
+        //return 0d;
+    //}
     
     // COMMAND METHODS
     
@@ -145,14 +145,14 @@ public class PivotIntakeSubsystem extends SubsystemBase {
     public void periodic() {
         // Update pivot motor using PID
         double pivotPower = pivotPID.calculate(getPivotPosition());
-        pivotMotor.set(MathUtil.clamp(pivotPower, -0.4, 0.4));
+        pivotMotor.set(MathUtil.clamp(pivotPower, -0.44, 0));
         
         // Update SmartDashboard
         SmartDashboard.putNumber("Pivot Position", getPivotPosition());
         SmartDashboard.putNumber("Pivot Setpoint", currentSetpoint);
         SmartDashboard.putBoolean("Pivot At Setpoint", isPivotAtSetpoint());
         SmartDashboard.putBoolean("Coral Detected", isCoralDetected());
-        SmartDashboard.putNumber("Coral Distance (mm)", getCoralDistance());
+        //SmartDashboard.putNumber("Coral Distance (mm)", getCoralDistance());
         SmartDashboard.putNumber("Intake Wheel Speed", intakeWheelMotor.get());
         SmartDashboard.putNumber("Pivot Motor Current", pivotMotor.getSupplyCurrent().getValueAsDouble());
         SmartDashboard.putNumber("Intake Motor Current", intakeWheelMotor.getSupplyCurrent().getValueAsDouble());
