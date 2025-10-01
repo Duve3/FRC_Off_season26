@@ -72,9 +72,9 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(-joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(-joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+                drive.withVelocityX(joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
+                    .withVelocityY(joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+                    .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
         );
 
@@ -87,7 +87,7 @@ public class RobotContainer {
 
         joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
         joystick.b().whileTrue(drivetrain.applyRequest(() ->
-            point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
+            point.withModuleDirection(new Rotation2d(joystick.getLeftY(), joystick.getLeftX()))
         ));
 
         // Run SysId routines when holding back/start and X/Y.
@@ -106,13 +106,13 @@ public class RobotContainer {
 
         //joystick2.b().onTrue(elevator.setPosition(0));
         // Level 1
-        joystick2.rightTrigger().onTrue(drivetrain.runOnce(() -> pivotSub.setPivotSetpoint(0.015d)));
+        joystick2.rightTrigger().onTrue(drivetrain.runOnce(() -> {pivotSub.setIntakeSpeed(0.5d);pivotSub.setPivotSetpoint(1d);}));
         // Level 2
-        joystick2.a().onTrue(drivetrain.runOnce(() -> roller.dropCoral(5)));
+        joystick2.a().onTrue(drivetrain.runOnce(() -> roller.dropCoral(12)));
         // Level 3
-        joystick2.x().onTrue(drivetrain.runOnce(() -> elevator.setPosition(3)));
+        joystick2.x().onTrue(drivetrain.runOnce(() -> elevator.setOpenLoop(() -> 12d)));
         // Level 4
-        joystick2.y().onTrue(drivetrain.runOnce(() -> elevator.setPosition(4)));
+        joystick2.y().onTrue(drivetrain.runOnce(() -> elevator.setCloseLoop(() -> 2d)));
     }
 
     public Command getAutonomousCommand() {

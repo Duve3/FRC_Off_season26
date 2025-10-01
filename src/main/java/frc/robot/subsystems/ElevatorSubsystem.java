@@ -14,8 +14,8 @@
 
     public class ElevatorSubsystem extends SubsystemBase{
         // Declares the two motors controling the elevator
-        private final TalonFX backElevator = new TalonFX(15, "canivore");
-        private final TalonFX frontElevator = new TalonFX(14, "canivore");
+        private final TalonFX backElevator = new TalonFX(14);
+        private final TalonFX frontElevator = new TalonFX(15);
         // Defines motionMagic stuff(allows the elevator to move smoothly)
         private final MotionMagicVoltage motionMagic = new MotionMagicVoltage(0).withSlot(0);
         // Defines a static voltage for the elevator
@@ -34,8 +34,11 @@
             
             //frontElevator.setControl(new DutyCycleOut(0.2d));
             
-            frontElevator.getPosition().setUpdateFrequency(100);
+            frontElevator.getPosition().setUpdateFrequency(1000);
             frontElevator.optimizeBusUtilization();
+
+            backElevator.getPosition().setUpdateFrequency(1000);
+            backElevator.optimizeBusUtilization();
             
             // Applies necessary configuration for each motor
             configureMotor(frontElevator);

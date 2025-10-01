@@ -24,7 +24,7 @@ public final class Constants {
         public static final int PIVOT_MOTOR_ID = 20;
         public static final int INTAKE_WHEEL_MOTOR_ID = 18;
         public static final int PIVOT_ENCODER_ID = 21;
-        //public static final int CORAL_SENSOR_ID = 19;
+        public static final int CORAL_SENSOR_ID = 22;
         
         // Pivot positions (in rotations) - 200° total range
         public static final double STOWED_POSITION = 0.005;          // Home position

@@ -21,7 +21,7 @@ public class PivotIntakeSubsystem extends SubsystemBase {
     private final TalonFX pivotMotor = new TalonFX(PivotIntakeConstants.PIVOT_MOTOR_ID);
     private final TalonFX intakeWheelMotor = new TalonFX(PivotIntakeConstants.INTAKE_WHEEL_MOTOR_ID);
     private final CANcoder pivotEncoder = new CANcoder(PivotIntakeConstants.PIVOT_ENCODER_ID);
-    //private final CANrange coralSensor = new CANrange(PivotIntakeConstants.CORAL_SENSOR_ID);
+    private final CANrange coralSensor = new CANrange(PivotIntakeConstants.CORAL_SENSOR_ID);
     
     // PID controller for pivot positioning
     private final PIDController pivotPID = new PIDController(
@@ -145,7 +145,7 @@ public class PivotIntakeSubsystem extends SubsystemBase {
     public void periodic() {
         // Update pivot motor using PID
         double pivotPower = pivotPID.calculate(getPivotPosition());
-        pivotMotor.set(MathUtil.clamp(pivotPower, -0.44, 0));
+        pivotMotor.set(MathUtil.clamp(pivotPower, -0.44, 0.44));
         
         // Update SmartDashboard
         SmartDashboard.putNumber("Pivot Position", getPivotPosition());
