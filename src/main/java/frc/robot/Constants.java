@@ -38,11 +38,14 @@ public final class Constants {
         // Sensor thresholds
         public static final double CORAL_DETECTED_DISTANCE_MM = 100.0;
         
-        // PID Constants
-        public static final double PIVOT_KP = 3.0;
-        public static final double PIVOT_KI = 0.0;
-        public static final double PIVOT_KD = 0.1;
-        public static final double PIVOT_TOLERANCE = 0.2;
+        // PID Constants - Tune these on the robot!
+        public static final double PIVOT_KP = 24.0;  // Proportional gain - may need adjustment
+        public static final double PIVOT_KI = 0.0;   // Integral gain - add if steady-state error
+        public static final double PIVOT_KD = 0.5;   // Derivative gain - increase if oscillates
+        public static final double PIVOT_KV = 0.0;   // Feedforward velocity gain
+        public static final double PIVOT_KS = 0.0;   // Feedforward static friction
+        public static final double PIVOT_KG = 0.0;   // Gravity feedforward!
+        public static final double PIVOT_TOLERANCE = 0.02;
     }
 
     // Returns true if the value is inside the list
