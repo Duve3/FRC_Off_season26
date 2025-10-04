@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -106,13 +107,15 @@ public class RobotContainer {
 
         //joystick2.b().onTrue(elevator.setPosition(0));
         // Level 1
-        joystick2.rightTrigger().onTrue(drivetrain.runOnce(() -> {pivotSub.setIntakeSpeed(0.5d);pivotSub.setPivotSetpoint(1d);}));
+        joystick2.rightTrigger().onTrue(new InstantCommand(() -> pivotSub.setPivotSetpoint(1d)));
         // Level 2
-        joystick2.a().onTrue(drivetrain.runOnce(() -> roller.dropCoral(12)));
+        joystick2.a().onTrue(roller.dropCoral(12));
+        //joystick2.a().onTrue(new InstantCommand(pivotSub.setPivotSetpoint(0.05d)));
         // Level 3
-        joystick2.x().onTrue(drivetrain.runOnce(() -> elevator.setOpenLoop(() -> 12d)));
+        joystick2.x().onTrue(elevator.setPosition(1));
+        //joystick2.x().onTrue(new InstantCommand(() -> elevator.setOpenLoop(()->12d)));
         // Level 4
-        joystick2.y().onTrue(drivetrain.runOnce(() -> elevator.setCloseLoop(() -> 2d)));
+        joystick2.y().onTrue(elevator.setPosition(2));
     }
 
     public Command getAutonomousCommand() {

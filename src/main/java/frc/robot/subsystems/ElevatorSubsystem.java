@@ -14,8 +14,8 @@
 
     public class ElevatorSubsystem extends SubsystemBase{
         // Declares the two motors controling the elevator
-        private final TalonFX backElevator = new TalonFX(14);
-        private final TalonFX frontElevator = new TalonFX(15);
+        private final TalonFX backElevator = new TalonFX(15, "rio");
+        private final TalonFX frontElevator = new TalonFX(14, "rio");
         // Defines motionMagic stuff(allows the elevator to move smoothly)
         private final MotionMagicVoltage motionMagic = new MotionMagicVoltage(0).withSlot(0);
         // Defines a static voltage for the elevator
@@ -79,11 +79,13 @@
 
         // Sets the voltage of the elevator
         public Command setOpenLoop(DoubleSupplier voltage) {
-            return Commands.run(() -> frontElevator.setControl(voltageOut.withOutput(voltage.getAsDouble())) , this);
+            System.out.println("We're here " + voltage.getAsDouble());
+            return Commands.run(() -> frontElevator.setControl(voltageOut.withOutput(voltage.getAsDouble())), this);
         }
         // Holds the position of the elevator at a certain rotation
         // The rio will assume position 0 is when you click start, so always reset the elevator to the bottom
         public Command setCloseLoop(DoubleSupplier position) {
+            System.out.println("The close loop is here");
             return Commands.run(() -> frontElevator.setControl(motionMagic.withPosition(position.getAsDouble())), this);
         }
 
@@ -103,8 +105,8 @@
         public Command setPosition(int targetPos){
             pos = targetPos;
             SmartDashboard.putNumber("Elevator Level Index", pos);
-            return setOpenLoop(() -> 12d);
-            //return setCloseLoop(() -> positions[targetPos]);
+            //return setOpenLoop(() -> 12d);
+            return setCloseLoop(() -> positions[targetPos]);
         }
 
         /** Sets the position of both motors.
