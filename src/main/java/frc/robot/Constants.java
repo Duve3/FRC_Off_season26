@@ -39,13 +39,13 @@ public final class Constants {
         public static final double CORAL_DETECTED_DISTANCE_MM = 100.0;
         
         // PID Constants - Reduced kP to slow down response
-        public static final double PIVOT_KP = 12.0;  // Reduced from 24.0
+        public static final double PIVOT_KP = 1;  // Reduced from 24.0
         public static final double PIVOT_KI = 0.0;
-        public static final double PIVOT_KD = 0.5;   // Reduced from 1.0
+        public static final double PIVOT_KD = 0.0;   // Reduced from 1.0
         public static final double PIVOT_KV = 0.0;
-        public static final double PIVOT_KS = 0.0;
-        public static final double PIVOT_KG = 0.0;
-        public static final double PIVOT_TOLERANCE = 0.02;
+        public static final double PIVOT_KS = 0.45;
+        public static final double PIVOT_KG = 0.45;
+        public static final double PIVOT_TOLERANCE = 0.002;
     }
 
     // Returns true if the value is inside the list

@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -25,6 +26,7 @@ public class PivotIntakeSubsystem extends SubsystemBase {
     
     // Position control request for pivot
     private final PositionVoltage pivotPositionControl = new PositionVoltage(0).withSlot(0);
+    private final MotionMagicVoltage motionMagic = new MotionMagicVoltage(0).withSlot(0);
     
     // Current pivot setpoint
     private double currentSetpoint = PivotIntakeConstants.STOWED_POSITION;
@@ -54,6 +56,10 @@ public class PivotIntakeSubsystem extends SubsystemBase {
         config.Slot0.kS = PivotIntakeConstants.PIVOT_KS;  // Feedforward static
         config.Slot0.kG = PivotIntakeConstants.PIVOT_KG;  // Gravity compensation
         config.Slot0.GravityType = com.ctre.phoenix6.signals.GravityTypeValue.Arm_Cosine; // For pivoting arms
+        
+        // shrug i hop eit works
+        config.MotionMagic.MotionMagicCruiseVelocity = 100;
+        config.MotionMagic.MotionMagicAcceleration = 250;
         
         // Use the remote CANcoder for absolute position feedback
         config.Feedback.FeedbackRemoteSensorID = PivotIntakeConstants.PIVOT_ENCODER_ID;
@@ -95,7 +101,8 @@ public class PivotIntakeSubsystem extends SubsystemBase {
     public void setPivotSetpoint(double setpoint) {
         currentSetpoint = setpoint;
         // Command the motor to the target position
-        pivotMotor.setControl(pivotPositionControl.withPosition(currentSetpoint));
+        //pivotMotor.setControl(pivotPositionControl.withPosition(currentSetpoint));
+        pivotMotor.setControl(motionMagic.withPosition(setpoint));
     }
     
     // Get current pivot position

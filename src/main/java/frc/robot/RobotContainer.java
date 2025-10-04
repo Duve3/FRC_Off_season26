@@ -107,7 +107,7 @@ public class RobotContainer {
 
         //joystick2.b().onTrue(elevator.setPosition(0));
         // Level 1
-        joystick2.rightTrigger().onTrue(new InstantCommand(() -> pivotSub.setPivotSetpoint(1d)));
+        joystick2.rightTrigger().onTrue(new InstantCommand(() -> pivotSub.setPivotSetpoint(-0.17d)));
         // Level 2
         joystick2.a().onTrue(roller.dropCoral(12));
         //joystick2.a().onTrue(new InstantCommand(pivotSub.setPivotSetpoint(0.05d)));
