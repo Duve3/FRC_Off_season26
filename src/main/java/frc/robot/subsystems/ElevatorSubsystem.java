@@ -34,11 +34,11 @@
             
             //frontElevator.setControl(new DutyCycleOut(0.2d));
             
-            frontElevator.getPosition().setUpdateFrequency(1000);
-            frontElevator.optimizeBusUtilization();
+            //frontElevator.getPosition().setUpdateFrequency(100);
+            //frontElevator.optimizeBusUtilization();
 
-            backElevator.getPosition().setUpdateFrequency(1000);
-            backElevator.optimizeBusUtilization();
+            //backElevator.getPosition().setUpdateFrequency(100);
+            //backElevator.optimizeBusUtilization();
             
             // Applies necessary configuration for each motor
             configureMotor(frontElevator);

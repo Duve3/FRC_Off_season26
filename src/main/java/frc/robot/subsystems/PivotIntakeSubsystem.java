@@ -52,8 +52,9 @@ public class PivotIntakeSubsystem extends SubsystemBase {
         config.Slot0.kP = PivotIntakeConstants.PIVOT_KP;
         config.Slot0.kI = PivotIntakeConstants.PIVOT_KI;
         config.Slot0.kD = PivotIntakeConstants.PIVOT_KD;
-        config.Slot0.kV = PivotIntakeConstants.PIVOT_KV;  // Feedforward velocity
-        config.Slot0.kS = PivotIntakeConstants.PIVOT_KS;  // Feedforward static
+        config.Slot0.kA = 0; // ensure they are reset to 0
+        config.Slot0.kS = 0; // ensure they are reset to 0
+        config.Slot0.kV = 0; // ensure they are reset to 0
         config.Slot0.kG = PivotIntakeConstants.PIVOT_KG;  // Gravity compensation
         //config.Slot0.kA = PivotIntakeConstants.PIVOT_KA;
         config.Slot0.GravityType = com.ctre.phoenix6.signals.GravityTypeValue.Arm_Cosine; // For pivoting arms
@@ -61,7 +62,7 @@ public class PivotIntakeSubsystem extends SubsystemBase {
         // shrug i hop eit works
         config.MotionMagic.MotionMagicCruiseVelocity = 125;
         config.MotionMagic.MotionMagicAcceleration = 250;
-        config.MotionMagic.MotionMagicJerk = 2500;
+        config.MotionMagic.MotionMagicJerk = 0; // resetting the value
         
         // Use the remote CANcoder for absolute position feedback
         config.Feedback.FeedbackRemoteSensorID = PivotIntakeConstants.PIVOT_ENCODER_ID;

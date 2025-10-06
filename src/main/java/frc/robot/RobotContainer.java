@@ -22,7 +22,6 @@ import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.DumpRollerSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -50,7 +49,6 @@ public class RobotContainer {
 
     public final ElevatorSubsystem elevator = new ElevatorSubsystem();
     public final PivotIntakeSubsystem pivotSub = new PivotIntakeSubsystem();
-    public final ArmSubsystem armSub = new ArmSubsystem(); // legit just made for testing the pivot out
     public final DumpRollerSubsystem roller = new DumpRollerSubsystem();
 
     //private final SendableChooser<Command> autoChooser;
@@ -112,7 +110,7 @@ public class RobotContainer {
         //joystick2.rightTrigger().onTrue(new InstantCommand(() -> pivotSub.setPivotSetpoint(-0.4d)));
         //joystick2.leftTrigger().onTrue(new InstantCommand(() -> pivotSub.setPivotSetpoint(0d)));
         
-        joystick2.rightTrigger().onTrue(new InstantCommand(() -> armSub.setSetpoint(0.2)));
+        joystick2.rightTrigger().onTrue(new InstantCommand(() -> pivotSub.setPivotSetpoint(0.2)));
         // Dump roller intake
         joystick2.leftBumper().onTrue(roller.dropCoral(.5));
         // Level 2
