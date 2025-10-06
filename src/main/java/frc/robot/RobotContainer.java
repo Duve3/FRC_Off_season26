@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.DumpRollerSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -49,6 +50,7 @@ public class RobotContainer {
 
     public final ElevatorSubsystem elevator = new ElevatorSubsystem();
     public final PivotIntakeSubsystem pivotSub = new PivotIntakeSubsystem();
+    public final ArmSubsystem armSub = new ArmSubsystem(); // legit just made for testing the pivot out
     public final DumpRollerSubsystem roller = new DumpRollerSubsystem();
 
     //private final SendableChooser<Command> autoChooser;
@@ -107,15 +109,23 @@ public class RobotContainer {
 
         //joystick2.b().onTrue(elevator.setPosition(0));
         // Level 1
-        joystick2.rightTrigger().onTrue(new InstantCommand(() -> pivotSub.setPivotSetpoint(-0.17d)));
+        //joystick2.rightTrigger().onTrue(new InstantCommand(() -> pivotSub.setPivotSetpoint(-0.4d)));
+        //joystick2.leftTrigger().onTrue(new InstantCommand(() -> pivotSub.setPivotSetpoint(0d)));
+        
+        joystick2.rightTrigger().onTrue(new InstantCommand(() -> armSub.setSetpoint(0.2)));
+        // Dump roller intake
+        joystick2.leftBumper().onTrue(roller.dropCoral(.5));
         // Level 2
-        joystick2.a().onTrue(roller.dropCoral(12));
+        joystick2.b().onTrue(elevator.setPosition(0));
         //joystick2.a().onTrue(new InstantCommand(pivotSub.setPivotSetpoint(0.05d)));
         // Level 3
-        joystick2.x().onTrue(elevator.setPosition(1));
+        joystick2.a().onTrue(elevator.setPosition(1));
         //joystick2.x().onTrue(new InstantCommand(() -> elevator.setOpenLoop(()->12d)));
         // Level 4
-        joystick2.y().onTrue(elevator.setPosition(2));
+        joystick2.x().onTrue(elevator.setPosition(2));
+
+        joystick2.y().onTrue(elevator.setPosition(3));
+
     }
 
     public Command getAutonomousCommand() {

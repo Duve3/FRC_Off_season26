@@ -27,25 +27,27 @@ public final class Constants {
         public static final int CORAL_SENSOR_ID = 22;
         
         // Pivot positions (in rotations) - 200° total range
-        public static final double STOWED_POSITION = 0.005;          // Home position
+        public static final double STOWED_POSITION = 0.0;          // Home position
         public static final double INTAKE_POSITION = 0.55;         // Ground collection
         public static final double REEF_SCORING_POSITION = 0.35;   // Reef scoring position
         
         // Motor speeds
-        public static final double INTAKE_SPEED = 0.6;             // Collecting coral
+        public static final double INTAKE_SPEED = 0.3;             // Collecting coral
         public static final double INTAKE_REVERSE_SPEED = -0.3;    // Intake wheels reverse during scoring
         
         // Sensor thresholds
         public static final double CORAL_DETECTED_DISTANCE_MM = 100.0;
         
         // PID Constants - Reduced kP to slow down response
-        public static final double PIVOT_KP = 1;  // Reduced from 24.0
-        public static final double PIVOT_KI = 0.0;
-        public static final double PIVOT_KD = 0.0;   // Reduced from 1.0
-        public static final double PIVOT_KV = 0.0;
-        public static final double PIVOT_KS = 0.45;
-        public static final double PIVOT_KG = 0.45;
-        public static final double PIVOT_TOLERANCE = 0.002;
+        // READ THE DOCS ON THE CTRE WEBSITE - PUT IN HERE LATER
+        public static final double PIVOT_KP = 3;  // Reduced from 24.0 //Increase from 1
+        public static final double PIVOT_KI = 0;  // Increased from 0
+        public static final double PIVOT_KD = 0.1;   // setting to 14 caused really fast
+        public static final double PIVOT_KV = 3;     // From 12 
+        public static final double PIVOT_KS = 0.45; 
+        public static final double PIVOT_KG = 3; // Increased from .45 
+        public static final double PIVOT_KA = 2;
+        public static final double PIVOT_TOLERANCE = 0.02;
     }
 
     // Returns true if the value is inside the list

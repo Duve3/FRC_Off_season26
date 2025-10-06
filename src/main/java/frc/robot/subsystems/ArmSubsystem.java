@@ -13,8 +13,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ArmSubsystem extends SubsystemBase {
 
-    TalonFX armMotor = new TalonFX(16);
-    CANcoder encoder = new CANcoder(17);
+    TalonFX armMotor = new TalonFX(20);
+    CANcoder encoder = new CANcoder(21);
     PIDController pid = new PIDController(2, 0, 0);
 
     public ArmSubsystem() {
@@ -23,7 +23,7 @@ public class ArmSubsystem extends SubsystemBase {
         
         armMotor.getConfigurator().apply(config);
 
-        pid.setSetpoint(-0.44);
+        //pid.setSetpoint(-0.44);
     }
 
     public void setSetpoint(double setpoint) {

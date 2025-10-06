@@ -55,11 +55,13 @@ public class PivotIntakeSubsystem extends SubsystemBase {
         config.Slot0.kV = PivotIntakeConstants.PIVOT_KV;  // Feedforward velocity
         config.Slot0.kS = PivotIntakeConstants.PIVOT_KS;  // Feedforward static
         config.Slot0.kG = PivotIntakeConstants.PIVOT_KG;  // Gravity compensation
+        //config.Slot0.kA = PivotIntakeConstants.PIVOT_KA;
         config.Slot0.GravityType = com.ctre.phoenix6.signals.GravityTypeValue.Arm_Cosine; // For pivoting arms
         
         // shrug i hop eit works
-        config.MotionMagic.MotionMagicCruiseVelocity = 100;
+        config.MotionMagic.MotionMagicCruiseVelocity = 125;
         config.MotionMagic.MotionMagicAcceleration = 250;
+        config.MotionMagic.MotionMagicJerk = 2500;
         
         // Use the remote CANcoder for absolute position feedback
         config.Feedback.FeedbackRemoteSensorID = PivotIntakeConstants.PIVOT_ENCODER_ID;
@@ -72,9 +74,9 @@ public class PivotIntakeSubsystem extends SubsystemBase {
         config.CurrentLimits.SupplyCurrentLimitEnable = true;
         
         // Limits to prevent over-rotation
-        config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 0.56; // Slightly past intake position
+        config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 0.5; // Slightly past intake position
         config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-        config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = -0.02; // Slightly past stowed
+        config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = -0.5; // Slightly past stowed
         config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
         
         pivotMotor.getConfigurator().apply(config);
@@ -87,7 +89,7 @@ public class PivotIntakeSubsystem extends SubsystemBase {
     
     private void configureIntakeMotor() {
         TalonFXConfiguration config = new TalonFXConfiguration();
-        config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+        config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
         
         // Current limits for intake motor
@@ -99,10 +101,10 @@ public class PivotIntakeSubsystem extends SubsystemBase {
     
     // Set the pivot position setpoint
     public void setPivotSetpoint(double setpoint) {
+        double movement = setpoint - currentSetpoint;
         currentSetpoint = setpoint;
         // Command the motor to the target position
-        //pivotMotor.setControl(pivotPositionControl.withPosition(currentSetpoint));
-        pivotMotor.setControl(motionMagic.withPosition(setpoint));
+        pivotMotor.setControl(motionMagic.withPosition(movement));
     }
     
     // Get current pivot position
@@ -122,8 +124,7 @@ public class PivotIntakeSubsystem extends SubsystemBase {
     
     // Check if coral is detected by CanRange sensor
     public boolean isCoralDetected() {
-        //return coralSensor.getDistance().getValueAsDouble() < PivotIntakeConstants.CORAL_DETECTED_DISTANCE_MM;
-        return false;
+        return coralSensor.getDistance().getValueAsDouble() < PivotIntakeConstants.CORAL_DETECTED_DISTANCE_MM;
     }
     
     // Get the distance reading from CanRange sensor
