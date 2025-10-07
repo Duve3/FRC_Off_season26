@@ -108,10 +108,12 @@ public class RobotContainer {
         //joystick2.b().onTrue(elevator.setPosition(0));
         // Level 1
         //joystick2.rightTrigger().onTrue(new InstantCommand(() -> pivotSub.setPivotSetpoint(-0.4d)));
-        //joystick2.leftTrigger().onTrue(new InstantCommand(() -> pivotSub.setPivotSetpoint(0d)));
+        joystick2.leftTrigger().onTrue(new InstantCommand(() -> pivotSub.setPivotSetpoint(0d)));
         
-        joystick2.rightTrigger().onTrue(new InstantCommand(() -> pivotSub.setPivotSetpoint(0.2)));
+        joystick2.rightTrigger().onTrue(new InstantCommand(() -> pivotSub.setPivotSetpoint(-0.4)));
         // Dump roller intake
+        joystick2.rightBumper().onTrue(new InstantCommand(() -> pivotSub.zeroPositionEncoders()));
+
         joystick2.leftBumper().onTrue(roller.dropCoral(.5));
         // Level 2
         joystick2.b().onTrue(elevator.setPosition(0));

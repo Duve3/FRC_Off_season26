@@ -35,11 +35,17 @@ public class PivotIntakeSubsystem extends SubsystemBase {
         configurePivotMotor();
         configureIntakeMotor();
         
-        // Reset pivot encoder to 0 at startup
-        pivotEncoder.setPosition(0);
+        // // Reset pivot encoder to 0 at startup
+        // pivotEncoder.setPosition(0);
         
-        // Sync the TalonFX position with the CANcoder
-        // This ensures the motor controller knows the current position
+        // // Sync the TalonFX position with the CANcoder
+        // // This ensures the motor controller knows the current position
+        // pivotMotor.setPosition(0
+    }
+
+    public void zeroPositionEncoders() {
+        // just tells both the motor and the encoder that they are at pos 0;
+        pivotEncoder.setPosition(0);
         pivotMotor.setPosition(0);
     }
     
@@ -52,9 +58,9 @@ public class PivotIntakeSubsystem extends SubsystemBase {
         config.Slot0.kP = PivotIntakeConstants.PIVOT_KP;
         config.Slot0.kI = PivotIntakeConstants.PIVOT_KI;
         config.Slot0.kD = PivotIntakeConstants.PIVOT_KD;
-        config.Slot0.kA = 0; // ensure they are reset to 0
-        config.Slot0.kS = 0; // ensure they are reset to 0
-        config.Slot0.kV = 0; // ensure they are reset to 0
+        //config.Slot0.kA = 0; // ensure they are reset to 0
+        //config.Slot0.kS = 0; // ensure they are reset to 0
+        //config.Slot0.kV = 0; // ensure they are reset to 0
         config.Slot0.kG = PivotIntakeConstants.PIVOT_KG;  // Gravity compensation
         //config.Slot0.kA = PivotIntakeConstants.PIVOT_KA;
         config.Slot0.GravityType = com.ctre.phoenix6.signals.GravityTypeValue.Arm_Cosine; // For pivoting arms

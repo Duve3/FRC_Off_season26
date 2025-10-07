@@ -59,7 +59,7 @@
             config.Slot0.kG = 0.45;        
             config.Slot0.kS = 0.45;
             config.Slot0.GravityType = GravityTypeValue.Elevator_Static;
-            // Motion Magic
+            // Motion Magic - Increase this stuff for faster speeds
             config.MotionMagic.MotionMagicCruiseVelocity = 100;
             config.MotionMagic.MotionMagicAcceleration = 250;
             // Current limits
