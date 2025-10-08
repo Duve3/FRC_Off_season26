@@ -89,14 +89,13 @@
             return Commands.run(() -> frontElevator.setControl(motionMagic.withPosition(position.getAsDouble())), this);
         }
 
-        @Override
-        public void periodic() {
-            // Displays telemetry about the elevators position and power
-            SmartDashboard.putNumber("elevator position", frontElevator.getPosition().getValueAsDouble());
-            SmartDashboard.putNumber("elevator applied", frontElevator.getMotorVoltage().getValueAsDouble());
-        }
-
-        // Moves the elevator to a set position with a threshold of 0.5
+    @Override
+    public void periodic() {
+        // Displays telemetry about the elevators position and power
+        SmartDashboard.putNumber("elevator position", frontElevator.getPosition().getValueAsDouble());
+        SmartDashboard.putNumber("elevator applied", frontElevator.getMotorVoltage().getValueAsDouble());
+        SmartDashboard.putString("Elevator Level", "L" + pos);
+    }        // Moves the elevator to a set position with a threshold of 0.5
         public Command setPositionwithThreshold(int targetPos){
             return setPosition(targetPos).until(() -> Math.abs(positions[targetPos] - getPosition()) < 0.5);
         }
