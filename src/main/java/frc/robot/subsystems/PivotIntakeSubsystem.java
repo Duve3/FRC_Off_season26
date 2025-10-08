@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.PivotIntakeConstants;
+import frc.robot.commands.IntakeCoral;
 
 public class PivotIntakeSubsystem extends SubsystemBase {
 
@@ -130,7 +131,6 @@ public class PivotIntakeSubsystem extends SubsystemBase {
     
     // Set the pivot position setpoint
     public void setPivotSetpoint(double setpoint) {
-        double movement = setpoint - currentSetpoint;
         currentSetpoint = setpoint;
         // Command the motor to the target position
         pivotMotor.setControl(motionMagic.withPosition(setpoint));
@@ -192,6 +192,93 @@ public class PivotIntakeSubsystem extends SubsystemBase {
     // Command to stop intake wheels
     public Command stopWheels() {
         return Commands.run(() -> setIntakeSpeed(0), this);
+    }
+    
+    /**
+     * Complete sequence to collect coral from ground and transfer to dump roller.
+     * Uses current spike detection to determine when coral has been transferred.
+     * Sequence:
+     * 1. Deploy pivot to intake position
+     * 2. Run intake wheels until coral is detected
+     * 3. Wait 0.25s, then stow pivot to home
+     * 4. Transfer coral (ALL PARALLEL):
+     *    - Pivot wheels REVERSE
+     *    - Dump roller wheels RUN
+     *    - Wait 0.2s then pivot to 0.08
+     *    - Runs until current spike detected
+     * 5. Stop pivot wheels
+     * 
+     * @param dumpRoller The DumpRollerSubsystem to coordinate with
+     * @return Command sequence for the complete intake operation
+     */
+    public Command collectAndTransferCoral(DumpRollerSubsystem dumpRoller) {
+        return Commands.sequence(
+            // STEP 1: Deploy Pivot to Intake Position
+            Commands.runOnce(() -> setPivotSetpoint(PivotIntakeConstants.INTAKE_POSITION)),
+            Commands.waitUntil(this::isPivotAtSetpoint),
+            
+            // STEP 2: Run Intake Wheels (runs until coral sensor detects coral)
+            Commands.run(() -> setIntakeSpeed(PivotIntakeConstants.INTAKE_SPEED), this)
+                .until(this::isCoralDetected),
+            
+            // STEP 2.5: Wait 0.25 seconds
+            Commands.waitSeconds(0.25),
+            
+            // STEP 3: Stow Pivot to Home (0.0 rotations)
+            Commands.runOnce(() -> setPivotSetpoint(PivotIntakeConstants.STOWED_POSITION)),
+            Commands.waitUntil(this::isPivotAtSetpoint),
+            
+            // STEP 4: Transfer Coral (ALL PARALLEL)
+            Commands.parallel(
+                // Pivot wheels REVERSE (push coral out)
+                Commands.run(() -> setIntakeSpeed(PivotIntakeConstants.INTAKE_REVERSE_SPEED), this),
+                
+                // Dump roller wheels RUN (pull coral in) - runs until current spike detected
+                new IntakeCoral(dumpRoller),
+                
+                // Wait .2s then Pivot to .08
+                Commands.sequence(
+                    Commands.waitSeconds(0.2),
+                    Commands.runOnce(() -> setPivotSetpoint(0.08))
+                )
+            ),
+            
+            // STEP 5: Stop Pivot Wheels
+            Commands.runOnce(() -> setIntakeSpeed(0), this)
+        );
+    }
+    
+    /**
+     * Simpler version: Just collect coral from ground
+     * Deploys, runs intake until coral detected, then stows
+     */
+    public Command collectCoral() {
+        return Commands.sequence(
+            Commands.runOnce(() -> setPivotSetpoint(PivotIntakeConstants.INTAKE_POSITION)),
+            Commands.waitUntil(this::isPivotAtSetpoint),
+            Commands.run(() -> setIntakeSpeed(PivotIntakeConstants.INTAKE_SPEED), this)
+                .until(this::isCoralDetected),
+            Commands.runOnce(() -> setIntakeSpeed(0), this),
+            Commands.runOnce(() -> setPivotSetpoint(PivotIntakeConstants.STOWED_POSITION))
+        );
+    }
+    
+    /**
+     * Transfer coral from pivot intake to dump roller.
+     * Uses current spike detection to determine when coral has been transferred.
+     * Assumes pivot is already at stowed position with coral.
+     */
+    public Command transferCoralToDumpRoller(DumpRollerSubsystem dumpRoller) {
+        return Commands.sequence(
+            // Run both motors simultaneously with current spike detection
+            Commands.parallel(
+                new IntakeCoral(dumpRoller), // Automatically stops when current spike detected
+                Commands.run(() -> setIntakeSpeed(PivotIntakeConstants.INTAKE_REVERSE_SPEED), this)
+            ),
+            
+            // Stop pivot wheels (dump roller already stopped by IntakeCoral)
+            Commands.runOnce(() -> setIntakeSpeed(0), this)
+        );
     }
     
     @Override

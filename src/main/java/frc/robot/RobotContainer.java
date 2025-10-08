@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
+import frc.robot.commands.IntakeCoral;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.DumpRollerSubsystem;
@@ -51,18 +52,40 @@ public class RobotContainer {
     public final PivotIntakeSubsystem pivotSub = new PivotIntakeSubsystem();
     public final DumpRollerSubsystem roller = new DumpRollerSubsystem();
 
-    //private final SendableChooser<Command> autoChooser;
+    private final SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
-        // Raises Elevator to Level 4
-        //NamedCommands.registerCommand("Raise L4", elevator.setPositionwithThreshold(4));
-        // Raises Elevator to Level 0
-        //NamedCommands.registerCommand("Raise L0", elevator.setPositionwithThreshold(0));
-
-        //elevator.setDefaultCommand(elevator.setOpenLoop(() -> 0.2));
-
-        //autoChooser = AutoBuilder.buildAutoChooser("Tests");
-        //SmartDashboard.putData("Auto Mode", autoChooser);
+        // Register PathPlanner Named Commands
+        // PIVOT INTAKE COMMANDS
+        NamedCommands.registerCommand("Deploy Pivot", pivotSub.deployPivot()); // Move pivot to ground intake position
+        NamedCommands.registerCommand("Stow Pivot", pivotSub.stowPivot()); // Move pivot to home position
+        NamedCommands.registerCommand("Intermediate Pivot", pivotSub.intermediatePivot()); // Move pivot to reef scoring position
+        NamedCommands.registerCommand("Collect Coral", pivotSub.collectCoral()); // Deploy, intake until detected, stow
+        NamedCommands.registerCommand("Collect and Transfer Coral", pivotSub.collectAndTransferCoral(roller)); // Full auto: collect + transfer to dump
+        NamedCommands.registerCommand("Transfer to Dump", pivotSub.transferCoralToDumpRoller(roller)); // Transfer coral to dump roller only
+        
+        // INTAKE WHEEL COMMANDS
+        NamedCommands.registerCommand("Start Intake Wheels", pivotSub.intakeWheels()); // Run intake wheels forward
+        NamedCommands.registerCommand("Reverse Intake Wheels", pivotSub.reverseIntakeWheels()); // Run intake wheels backward
+        NamedCommands.registerCommand("Stop Intake Wheels", pivotSub.stopWheels()); // Stop intake wheels
+        
+        // ELEVATOR COMMANDS
+        NamedCommands.registerCommand("Raise L0", elevator.setPositionwithThreshold(0)); // Move elevator to level 0
+        NamedCommands.registerCommand("Raise L1", elevator.setPositionwithThreshold(1)); // Move elevator to level 1
+        NamedCommands.registerCommand("Raise L2", elevator.setPositionwithThreshold(2)); // Move elevator to level 2
+        NamedCommands.registerCommand("Raise L3", elevator.setPositionwithThreshold(3)); // Move elevator to level 3
+        NamedCommands.registerCommand("Raise L4", elevator.setPositionwithThreshold(4)); // Move elevator to level 4
+        
+        // DUMP ROLLER COMMANDS
+        NamedCommands.registerCommand("Intake Coral", new IntakeCoral(this)); // Run dump roller until current spike detected
+        NamedCommands.registerCommand("Drop Coral", roller.dropCoral(0.2).withTimeout(0.5)); // Outtake coral for 0.5s
+        NamedCommands.registerCommand("Keep Coral", roller.keepCoral()); // Hold/stop dump roller
+        NamedCommands.registerCommand("Prepare Coral Out", roller.PrepareCoral(true)); // Push coral out slightly
+        NamedCommands.registerCommand("Prepare Coral In", roller.PrepareCoral(false)); // Pull coral in slightly
+        
+        // Build auto chooser with PathPlanner
+        autoChooser = AutoBuilder.buildAutoChooser();
+        SmartDashboard.putData("Auto Mode", autoChooser);
 
         configureBindings();
     }
@@ -108,9 +131,19 @@ public class RobotContainer {
         //joystick2.b().onTrue(elevator.setPosition(0));
         // Level 1
         //joystick2.rightTrigger().onTrue(new InstantCommand(() -> pivotSub.setPivotSetpoint(-0.4d)));
-        joystick2.leftTrigger().onTrue(new InstantCommand(() -> pivotSub.setPivotSetpoint(0d)));
+        //joystick2.leftTrigger().onTrue(new InstantCommand(() -> pivotSub.setPivotSetpoint(0d)));
 
         joystick2.rightTrigger().onTrue(new InstantCommand(() -> pivotSub.setPivotSetpoint(0.2d)));
+        
+        // Coral collection and transfer sequence
+        // Press POV Up to run the full sequence: deploy -> intake -> stow -> transfer to dump roller
+        joystick2.povUp().onTrue(pivotSub.collectAndTransferCoral(roller));
+        
+        // Mini Test 1: Just collect coral (POV Down)
+        joystick2.povDown().onTrue(pivotSub.collectCoral());
+        
+        // Mini Test 2: Just transfer to dump roller (POV Left) - use when coral already collected
+        joystick2.povLeft().onTrue(pivotSub.transferCoralToDumpRoller(roller));
         
         // Dump roller intake
         joystick2.rightBumper().onTrue(new InstantCommand(() -> pivotSub.zeroPositionEncoders()));
@@ -130,6 +163,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return Commands.print("No autonomous command configured");
+        return autoChooser.getSelected();
     }
 }

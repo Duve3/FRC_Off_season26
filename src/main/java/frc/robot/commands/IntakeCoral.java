@@ -33,7 +33,14 @@ public class IntakeCoral extends Command{
 
     // CONSTRUCTOR
     public IntakeCoral(RobotContainer robotcontainer){          
-        //this.dumpRoller = robotcontainer.dumpRoller;
+        this.dumpRoller = robotcontainer.roller;
+        addRequirements(dumpRoller);
+    }
+    
+    // Alternative constructor for direct subsystem injection :)
+    public IntakeCoral(DumpRollerSubsystem dumpRoller){          
+        this.dumpRoller = dumpRoller;
+        addRequirements(dumpRoller);
     }  
     
     @Override
