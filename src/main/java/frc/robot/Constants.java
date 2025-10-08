@@ -40,10 +40,10 @@ public final class Constants {
         
         // PID Constants - Reduced kP to slow down response
         // READ THE DOCS ON THE CTRE WEBSITE - PUT IN HERE LATER
-        public static final double PIVOT_KP = 0;  // Reduced from 24.0 //Increase from 1
-        public static final double PIVOT_KI = 0.02;  // Increased from 0
+        public static final double PIVOT_KP = 0.2;  // Reduced from 24.0 //Increase from 1
+        //public static final double PIVOT_KI = 0.02;  // Increased from 0
         public static final double PIVOT_KD = 0.02;   // setting to 14 caused really fast
-        public static final double PIVOT_KG = 3; // Increased from .45 
+        public static final double PIVOT_KG = -3; // Increased from .45 
         //public static final double PIVOT_KA = 3; // Feedforward thingy
         public static final double PIVOT_TOLERANCE = 0.02;
     }

@@ -59,18 +59,18 @@ public class PivotIntakeSubsystem extends SubsystemBase {
     private void configurePivotMotor() {
         TalonFXConfiguration config = new TalonFXConfiguration();
         config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-        config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         
-        // // PID Configuration for position control
-        // config.Slot0.kP = PivotIntakeConstants.PIVOT_KP;
-        // config.Slot0.kI = PivotIntakeConstants.PIVOT_KI;
-        // config.Slot0.kD = PivotIntakeConstants.PIVOT_KD;
-        // //config.Slot0.kA = 0; // ensure they are reset to 0
-        // //config.Slot0.kS = 0; // ensure they are reset to 0
-        // //config.Slot0.kV = 0; // ensure they are reset to 0
-        // config.Slot0.kG = PivotIntakeConstants.PIVOT_KG;  // Gravity compensation
-        // //config.Slot0.kA = PivotIntakeConstants.PIVOT_KA;
-        // config.Slot0.GravityType = com.ctre.phoenix6.signals.GravityTypeValue.Arm_Cosine; // For pivoting arms
+        // PID Configuration for position control
+        config.Slot0.kP = PivotIntakeConstants.PIVOT_KP;
+        //config.Slot0.kI = PivotIntakeConstants.PIVOT_KI;
+        config.Slot0.kD = PivotIntakeConstants.PIVOT_KD;
+        //config.Slot0.kA = 0; // ensure they are reset to 0
+        //config.Slot0.kS = 0; // ensure they are reset to 0
+        //config.Slot0.kV = 0; // ensure they are reset to 0
+        config.Slot0.kG = PivotIntakeConstants.PIVOT_KG;  // Gravity compensation
+        //config.Slot0.kA = PivotIntakeConstants.PIVOT_KA;
+        config.Slot0.GravityType = com.ctre.phoenix6.signals.GravityTypeValue.Arm_Cosine; // For pivoting arms
         
         // // shrug i hop eit works
         // config.MotionMagic.MotionMagicCruiseVelocity = 125;
@@ -78,16 +78,17 @@ public class PivotIntakeSubsystem extends SubsystemBase {
         // config.MotionMagic.MotionMagicJerk = 0; // resetting the value
 
         MotionMagicConfigs mm = config.MotionMagic;
-        mm.withMotionMagicCruiseVelocity(RotationsPerSecond.of(5)) // 5 (mechanism) rotations per second cruise
-        .withMotionMagicAcceleration(RotationsPerSecondPerSecond.of(10)) // Take approximately 0.5 seconds to reach max vel
+        mm.withMotionMagicCruiseVelocity(RotationsPerSecond.of(0.01)) // 5 (mechanism) rotations per second cruise
+        .withMotionMagicAcceleration(RotationsPerSecondPerSecond.of(0.1)) // Take approximately 0.5 seconds to reach max vel
         // Take approximately 0.1 seconds to reach max accel 
-        .withMotionMagicJerk(RotationsPerSecondPerSecond.per(Second).of(100));
+        .withMotionMagicJerk(RotationsPerSecondPerSecond.per(Second).of(0));
 
         Slot0Configs slot0 = config.Slot0;
-        slot0.kS = 0.25; // Add 0.25 V output to overcome static friction
+        slot0.kS = 0.45; // Add 0.25 V output to overcome static friction
         slot0.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
+        slot0.kG = 0; // No gravity
         slot0.kA = 0.01; // An acceleration of 1 rps/s requires 0.01 V output
-        slot0.kP = 60; // A position error of 0.2 rotations results in 12 V output
+        slot0.kP = 0.02; // A position error of 0.2 rotations results in 12 V output
         slot0.kI = 0; // No output for integrated error
         slot0.kD = 0.5; // A velocity error of 1 rps results in 0.5 V output
         
@@ -95,7 +96,7 @@ public class PivotIntakeSubsystem extends SubsystemBase {
         config.Feedback.FeedbackRemoteSensorID = PivotIntakeConstants.PIVOT_ENCODER_ID;
         config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
         config.Feedback.SensorToMechanismRatio = 1.0; // Adjust if there's gearing
-        config.Feedback.RotorToSensorRatio = 1.0; // Not really sure if needed but included anyways
+        config.Feedback.RotorToSensorRatio = 60.0; // Not really sure if needed but included anyways
         
         // Current limits for pivot motor
         config.CurrentLimits.SupplyCurrentLimit = 40;
@@ -132,7 +133,7 @@ public class PivotIntakeSubsystem extends SubsystemBase {
         double movement = setpoint - currentSetpoint;
         currentSetpoint = setpoint;
         // Command the motor to the target position
-        pivotMotor.setControl(motionMagic.withPosition(movement));
+        pivotMotor.setControl(motionMagic.withPosition(setpoint));
     }
     
     // Get current pivot position
