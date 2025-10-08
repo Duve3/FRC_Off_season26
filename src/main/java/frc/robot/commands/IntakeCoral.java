@@ -33,7 +33,7 @@ public class IntakeCoral extends Command{
 
     // CONSTRUCTOR
     public IntakeCoral(RobotContainer robotcontainer){          
-        this.dumpRoller = robotcontainer.roller;
+        this.dumpRoller = robotcontainer.dumpRoller;
         addRequirements(dumpRoller);
     }
     
