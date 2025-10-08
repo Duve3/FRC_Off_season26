@@ -29,6 +29,8 @@ public class DumpRollerSubsystem extends SubsystemBase{
     public final double MAX_CURRENT = 30;
     // Indicates if the coral is being held
     public boolean isHolding = false;
+    // Tracks if coral is currently in the dump roller
+    private boolean hasCoralLoaded = false;
 
     // Initializes the motors and controller
     public DumpRollerSubsystem() {
@@ -48,7 +50,17 @@ public class DumpRollerSubsystem extends SubsystemBase{
     // Returns the sensor input, If a coral was found
     public boolean getSensorInput() {
         return coralSensor.get();
-        }
+    }
+    
+    // Sets the state when coral is detected (called by IntakeCoral command)
+    public void setCoralLoaded(boolean loaded) {
+        hasCoralLoaded = loaded;
+    }
+    
+    // Returns if coral is currently loaded
+    public boolean hasCoralLoaded() {
+        return hasCoralLoaded;
+    }
 
     // Controls the position of the coral
     public Command PrepareCoral(boolean out){
@@ -73,5 +85,6 @@ public class DumpRollerSubsystem extends SubsystemBase{
     public void periodic() {
         SmartDashboard.putNumber("Coral Motor Current", coralMotor.getStatorCurrent().getValueAsDouble());
         SmartDashboard.putBoolean("Intake Sensor", coralSensor.get());
+        SmartDashboard.putBoolean("Dump Roller Has Coral", hasCoralLoaded);
     }
 }

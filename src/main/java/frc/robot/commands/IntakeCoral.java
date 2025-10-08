@@ -103,6 +103,7 @@ public class IntakeCoral extends Command{
                 // If there was a lot of high current values, then a coral was detected
                 if (highCurrentCount >= HIGH_CURRENT_COUNT) {
                     System.out.println("Coral detected! Stopping motor.");
+                    dumpRoller.setCoralLoaded(true); // Mark that coral is now loaded
                     return true;
                 }
             }

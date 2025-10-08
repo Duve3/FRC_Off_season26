@@ -196,6 +196,7 @@ public class RobotContainer {
         // Sequence of Commands
         return Commands.sequence(   
             dumpRoller.dropCoral(launchSpeeds[posIndex]).withTimeout(0.5),
+            Commands.runOnce(() -> dumpRoller.setCoralLoaded(false)), // Clear coral state after launch
             dumpRoller.keepCoral().withTimeout(0.01),
             // Drops to Level 0 after done
             elevator.setPosition(0)

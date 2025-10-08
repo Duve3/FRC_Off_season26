@@ -39,6 +39,9 @@ public class PivotIntakeSubsystem extends SubsystemBase {
     // Current pivot setpoint
     private double currentSetpoint = PivotIntakeConstants.STOWED_POSITION;
     
+    // Track if coral has been collected (set manually after collection)
+    private boolean hasCoralInIntake = false;
+    
     public PivotIntakeSubsystem() {
         configurePivotMotor();
         configureIntakeMotor();
@@ -156,6 +159,16 @@ public class PivotIntakeSubsystem extends SubsystemBase {
         return coralSensor.getDistance().getValueAsDouble() < PivotIntakeConstants.CORAL_DETECTED_DISTANCE_MM;
     }
     
+    // Set whether coral is in the intake (called by commands)
+    public void setHasCoralInIntake(boolean hasCoral) {
+        hasCoralInIntake = hasCoral;
+    }
+    
+    // Get whether coral is currently in the intake
+    public boolean hasCoralInIntake() {
+        return hasCoralInIntake;
+    }
+    
     // Get the distance reading from CanRange sensor
     //public double getCoralDistance() {
         //return coralSensor.getDistance().getValueAsDouble();
@@ -221,6 +234,8 @@ public class PivotIntakeSubsystem extends SubsystemBase {
             Commands.run(() -> setIntakeSpeed(PivotIntakeConstants.INTAKE_SPEED), this)
                 .until(this::isCoralDetected),
             
+            Commands.runOnce(() -> setHasCoralInIntake(true)), // Mark coral as collected
+            
             // STEP 2.5: Wait 0.25 seconds
             Commands.waitSeconds(0.25),
             
@@ -243,8 +258,9 @@ public class PivotIntakeSubsystem extends SubsystemBase {
                 )
             ),
             
-            // STEP 5: Stop Pivot Wheels
-            Commands.runOnce(() -> setIntakeSpeed(0), this)
+            // STEP 5: Stop Pivot Wheels and clear coral state
+            Commands.runOnce(() -> setIntakeSpeed(0), this),
+            Commands.runOnce(() -> setHasCoralInIntake(false)) // Coral transferred to dump roller
         );
     }
     
@@ -259,6 +275,7 @@ public class PivotIntakeSubsystem extends SubsystemBase {
             Commands.run(() -> setIntakeSpeed(PivotIntakeConstants.INTAKE_SPEED), this)
                 .until(this::isCoralDetected),
             Commands.runOnce(() -> setIntakeSpeed(0), this),
+            Commands.runOnce(() -> setHasCoralInIntake(true)), // Mark coral as collected
             Commands.runOnce(() -> setPivotSetpoint(PivotIntakeConstants.STOWED_POSITION))
         );
     }
@@ -290,7 +307,8 @@ public class PivotIntakeSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Pivot Setpoint", currentSetpoint);
         SmartDashboard.putNumber("Pivot Error", currentSetpoint - getPivotPosition());
         SmartDashboard.putBoolean("Pivot At Setpoint", isPivotAtSetpoint());
-        SmartDashboard.putBoolean("Coral Detected", isCoralDetected());
+        SmartDashboard.putBoolean("Coral Detected", hasCoralInIntake); // State-based, not real-time sensor
+        SmartDashboard.putBoolean("Coral Sensor Active", isCoralDetected()); // Real-time sensor reading
         //SmartDashboard.putNumber("Coral Distance (mm)", getCoralDistance());
         SmartDashboard.putNumber("Intake Wheel Speed", intakeWheelMotor.get());
         SmartDashboard.putNumber("Pivot Motor Current", pivotMotor.getSupplyCurrent().getValueAsDouble());
