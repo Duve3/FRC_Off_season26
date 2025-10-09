@@ -27,16 +27,16 @@ public final class Constants {
         public static final int CORAL_SENSOR_ID = 22;
         
         // Pivot positions (in rotations) - 200° total range
-        public static final double STOWED_POSITION = 0.0;          // Home position
-        public static final double INTAKE_POSITION = 0.55;         // Ground collection
+        public static final double STOWED_POSITION = 0.42;          // Home position
+        public static final double INTAKE_POSITION = 0.0;         // Ground collection
         public static final double REEF_SCORING_POSITION = 0.35;   // Reef scoring position
         
         // Motor speeds
-        public static final double INTAKE_SPEED = 0.3;             // Collecting coral
-        public static final double INTAKE_REVERSE_SPEED = -0.3;    // Intake wheels reverse during scoring
+        public static final double INTAKE_SPEED = -0.3;             // Collecting coral
+        public static final double INTAKE_REVERSE_SPEED = 0.3;    // Intake wheels reverse during scoring
         
         // Sensor thresholds
-        public static final double CORAL_DETECTED_DISTANCE_MM = 100.0;
+        public static final double CORAL_DETECTED_DISTANCE_M = 0.05;
         
         // PID Constants - Reduced kP to slow down response
         // READ THE DOCS ON THE CTRE WEBSITE - PUT IN HERE LATER

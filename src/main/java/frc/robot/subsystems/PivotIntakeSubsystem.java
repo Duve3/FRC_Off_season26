@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.PivotIntakeConstants;
 import frc.robot.commands.IntakeCoral;
 
@@ -66,14 +67,14 @@ public class PivotIntakeSubsystem extends SubsystemBase {
         config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         
         // PID Configuration for position control
-        config.Slot0.kP = PivotIntakeConstants.PIVOT_KP;
-        //config.Slot0.kI = PivotIntakeConstants.PIVOT_KI;
-        config.Slot0.kD = PivotIntakeConstants.PIVOT_KD;
-        //config.Slot0.kA = 0; // ensure they are reset to 0
-        //config.Slot0.kS = 0; // ensure they are reset to 0
-        //config.Slot0.kV = 0; // ensure they are reset to 0
-        config.Slot0.kG = PivotIntakeConstants.PIVOT_KG;  // Gravity compensation
-        //config.Slot0.kA = PivotIntakeConstants.PIVOT_KA;
+        // config.Slot0.kP = PivotIntakeConstants.PIVOT_KP;
+        // //config.Slot0.kI = PivotIntakeConstants.PIVOT_KI;
+        // config.Slot0.kD = PivotIntakeConstants.PIVOT_KD;
+        // //config.Slot0.kA = 0; // ensure they are reset to 0
+        // //config.Slot0.kS = 0; // ensure they are reset to 0
+        // //config.Slot0.kV = 0; // ensure they are reset to 0
+        // config.Slot0.kG = PivotIntakeConstants.PIVOT_KG;  // Gravity compensation
+        // //config.Slot0.kA = PivotIntakeConstants.PIVOT_KA;
         config.Slot0.GravityType = com.ctre.phoenix6.signals.GravityTypeValue.Arm_Cosine; // For pivoting arms
         
         // // shrug i hop eit works
@@ -82,34 +83,33 @@ public class PivotIntakeSubsystem extends SubsystemBase {
         // config.MotionMagic.MotionMagicJerk = 0; // resetting the value
 
         MotionMagicConfigs mm = config.MotionMagic;
-        mm.withMotionMagicCruiseVelocity(RotationsPerSecond.of(0.01)) // 5 (mechanism) rotations per second cruise
-        .withMotionMagicAcceleration(RotationsPerSecondPerSecond.of(0.1)) // Take approximately 0.5 seconds to reach max vel
-        // Take approximately 0.1 seconds to reach max accel 
+        mm.withMotionMagicCruiseVelocity(RotationsPerSecond.of(0.5)) // 5 (mechanism) rotations per second cruise
+        .withMotionMagicAcceleration(RotationsPerSecondPerSecond.of(1)) // Take approximately 0.5 seconds to reach max vel
         .withMotionMagicJerk(RotationsPerSecondPerSecond.per(Second).of(0));
 
         Slot0Configs slot0 = config.Slot0;
-        slot0.kS = 0.45; // Add 0.25 V output to overcome static friction
-        slot0.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
-        slot0.kG = 0; // No gravity
+        slot0.kS = 0.35; // Add 0.25 V output to overcome static friction
+        slot0.kV = 12 ; // A velocity target of 1 rps results in 0.12 V output
+        slot0.kG = 0;    // No gravity
         slot0.kA = 0.01; // An acceleration of 1 rps/s requires 0.01 V output
         slot0.kP = 0.02; // A position error of 0.2 rotations results in 12 V output
-        slot0.kI = 0; // No output for integrated error
-        slot0.kD = 0.5; // A velocity error of 1 rps results in 0.5 V output
+        slot0.kI = 0;    // No output for integrated error
+        slot0.kD = 0.5;  // A velocity error of 1 rps results in 0.5 V output
         
         // Use the remote CANcoder for absolute position feedback
         config.Feedback.FeedbackRemoteSensorID = PivotIntakeConstants.PIVOT_ENCODER_ID;
         config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
         config.Feedback.SensorToMechanismRatio = 1.0; // Adjust if there's gearing
-        config.Feedback.RotorToSensorRatio = 60.0; // Not really sure if needed but included anyways
+        config.Feedback.RotorToSensorRatio = 81.2; // Not really sure if needed but included anyways
         
         // Current limits for pivot motor
         config.CurrentLimits.SupplyCurrentLimit = 40;
         config.CurrentLimits.SupplyCurrentLimitEnable = true;
         
         // Limits to prevent over-rotation
-        config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = 0.5; // Slightly past intake position
+        config.SoftwareLimitSwitch.ForwardSoftLimitThreshold = PivotIntakeConstants.STOWED_POSITION; // Slightly past intake position
         config.SoftwareLimitSwitch.ForwardSoftLimitEnable = true;
-        config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = -0.5; // Slightly past stowed
+        config.SoftwareLimitSwitch.ReverseSoftLimitThreshold = PivotIntakeConstants.INTAKE_POSITION; // Slightly past stowed
         config.SoftwareLimitSwitch.ReverseSoftLimitEnable = true;
         
         pivotMotor.getConfigurator().apply(config);
@@ -156,7 +156,11 @@ public class PivotIntakeSubsystem extends SubsystemBase {
     
     // Check if coral is detected by CanRange sensor
     public boolean isCoralDetected() {
-        return coralSensor.getDistance().getValueAsDouble() < PivotIntakeConstants.CORAL_DETECTED_DISTANCE_MM;
+        double distance = coralSensor.getDistance().getValueAsDouble();
+        if (distance < 0.01) {
+            return false;
+        }
+        return distance < PivotIntakeConstants.CORAL_DETECTED_DISTANCE_M;
     }
     
     // Set whether coral is in the intake (called by commands)
@@ -233,11 +237,11 @@ public class PivotIntakeSubsystem extends SubsystemBase {
             // STEP 2: Run Intake Wheels (runs until coral sensor detects coral)
             Commands.run(() -> setIntakeSpeed(PivotIntakeConstants.INTAKE_SPEED), this)
                 .until(this::isCoralDetected),
-            
+            Commands.runOnce(() -> setIntakeSpeed(0), this),
             Commands.runOnce(() -> setHasCoralInIntake(true)), // Mark coral as collected
             
             // STEP 2.5: Wait 0.25 seconds
-            Commands.waitSeconds(0.25),
+            Commands.waitSeconds(0.125),
             
             // STEP 3: Stow Pivot to Home (0.0 rotations)
             Commands.runOnce(() -> setPivotSetpoint(PivotIntakeConstants.STOWED_POSITION)),
@@ -245,17 +249,20 @@ public class PivotIntakeSubsystem extends SubsystemBase {
             
             // STEP 4: Transfer Coral (ALL PARALLEL)
             Commands.parallel(
-                // Pivot wheels REVERSE (push coral out)
-                Commands.run(() -> setIntakeSpeed(PivotIntakeConstants.INTAKE_REVERSE_SPEED), this),
-                
                 // Dump roller wheels RUN (pull coral in) - runs until current spike detected
                 new IntakeCoral(dumpRoller),
+                Commands.run(() -> dumpRoller.PrepareCoral(false)),
+
+                // Pivot wheels REVERSE (push coral out)
+                Commands.runOnce(() -> setIntakeSpeed(PivotIntakeConstants.INTAKE_REVERSE_SPEED), this)
+                .andThen(() -> Commands.waitSeconds(2.5))
+                .andThen(() -> setIntakeSpeed(0))
                 
                 // Wait .2s then Pivot to .08
-                Commands.sequence(
-                    Commands.waitSeconds(0.2),
-                    Commands.runOnce(() -> setPivotSetpoint(0.08))
-                )
+                // Commands.sequence(
+                //     Commands.waitSeconds(0.2),
+                //     Commands.runOnce(() -> setPivotSetpoint(0.08))
+                // )
             ),
             
             // STEP 5: Stop Pivot Wheels and clear coral state
@@ -316,5 +323,6 @@ public class PivotIntakeSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Pivot Motor Position (internal)", pivotMotor.getPosition().getValueAsDouble());
         SmartDashboard.putNumber("Pivot Motor Duty Cycle", pivotMotor.getDutyCycle().getValueAsDouble());
         SmartDashboard.putNumber("Intake Motor Current", intakeWheelMotor.getSupplyCurrent().getValueAsDouble());
+        SmartDashboard.putNumber("Sensor raw output", coralSensor.getDistance().getValueAsDouble());
     }
 }

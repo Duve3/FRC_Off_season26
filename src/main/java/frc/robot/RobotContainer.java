@@ -175,7 +175,7 @@ public class RobotContainer {
         joystick2.leftTrigger().onTrue(new IntakeCoral(this));
 
         // Manual pivot position control
-        joystick2.rightTrigger().onTrue(new InstantCommand(() -> pivotSub.setPivotSetpoint(0.2d)));
+        joystick2.rightTrigger().onTrue(new InstantCommand(() -> pivotSub.setPivotSetpoint(0.4d)));
 
         // Zero pivot encoders
         joystick2.rightBumper().onTrue(new InstantCommand(() -> pivotSub.zeroPositionEncoders()));

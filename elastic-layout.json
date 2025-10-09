@@ -9,10 +9,10 @@
         "containers": [
           {
             "title": "Field",
-            "x": 512.0,
+            "x": 256.0,
             "y": 0.0,
-            "width": 1024.0,
-            "height": 512.0,
+            "width": 512.0,
+            "height": 256.0,
             "type": "Field",
             "properties": {
               "topic": "",
@@ -31,8 +31,8 @@
             "title": "Driver Camera",
             "x": 0.0,
             "y": 0.0,
-            "width": 512.0,
-            "height": 640.0,
+            "width": 256.0,
+            "height": 320.0,
             "type": "Camera Stream",
             "properties": {
               "topic": "",
@@ -42,10 +42,10 @@
           },
           {
             "title": "Match Time",
-            "x": 512.0,
-            "y": 512.0,
-            "width": 512.0,
-            "height": 256.0,
+            "x": 256.0,
+            "y": 256.0,
+            "width": 256.0,
+            "height": 128.0,
             "type": "Match Time",
             "properties": {
               "topic": "",
@@ -57,10 +57,10 @@
           },
           {
             "title": "Voltage",
-            "x": 1024.0,
-            "y": 512.0,
-            "width": 512.0,
-            "height": 256.0,
+            "x": 512.0,
+            "y": 256.0,
+            "width": 256.0,
+            "height": 128.0,
             "type": "Voltage View",
             "properties": {
               "topic": "/SmartDashboard/Voltage",
@@ -74,10 +74,10 @@
           },
           {
             "title": "Velocity (m/s)",
-            "x": 1536.0,
+            "x": 868.0,
             "y": 0.0,
-            "width": 384.0,
-            "height": 384.0,
+            "width": 192.0,
+            "height": 192.0,
             "type": "Gyro",
             "properties": {
               "topic": "/SmartDashboard/Swerve/Chassis Speeds",
@@ -87,10 +87,10 @@
           },
           {
             "title": "Swerve Drive",
-            "x": 1536.0,
-            "y": 384.0,
-            "width": 384.0,
-            "height": 384.0,
+            "x": 868.0,
+            "y": 192.0,
+            "width": 192.0,
+            "height": 192.0,
             "type": "SwerveDrive",
             "properties": {
               "topic": "/SmartDashboard/Swerve",
@@ -101,10 +101,10 @@
           },
           {
             "title": "Auto Chooser",
-            "x": 1536.0,
-            "y": 768.0,
-            "width": 384.0,
-            "height": 128.0,
+            "x": 868.0,
+            "y": 384.0,
+            "width": 192.0,
+            "height": 64.0,
             "type": "ComboBox Chooser",
             "properties": {
               "topic": "/SmartDashboard/Auto Mode",
@@ -114,10 +114,10 @@
           },
           {
             "title": "Team Info",
-            "x": 1024.0,
-            "y": 768.0,
-            "width": 512.0,
-            "height": 128.0,
+            "x": 512.0,
+            "y": 384.0,
+            "width": 256.0,
+            "height": 64.0,
             "type": "FMSInfo",
             "properties": {
               "topic": "",
@@ -126,10 +126,10 @@
           },
           {
             "title": "NT Connected",
-            "x": 256.0,
-            "y": 640.0,
-            "width": 256.0,
-            "height": 128.0,
+            "x": 128.0,
+            "y": 320.0,
+            "width": 128.0,
+            "height": 64.0,
             "type": "Boolean Box",
             "properties": {
               "topic": "/SmartDashboard/NT Connected",
@@ -143,9 +143,9 @@
           {
             "title": "DS Connected",
             "x": 0.0,
-            "y": 640.0,
-            "width": 256.0,
-            "height": 128.0,
+            "y": 320.0,
+            "width": 128.0,
+            "height": 64.0,
             "type": "Boolean Box",
             "properties": {
               "topic": "/SmartDashboard/DriverStation Connected",
@@ -158,10 +158,10 @@
           },
           {
             "title": "Elevator Level",
-            "x": 512.0,
-            "y": 768.0,
-            "width": 256.0,
-            "height": 128.0,
+            "x": 256.0,
+            "y": 384.0,
+            "width": 128.0,
+            "height": 64.0,
             "type": "Text Display",
             "properties": {
               "topic": "/SmartDashboard/Elevator Level",
@@ -172,10 +172,10 @@
           },
           {
             "title": "Pivot Position",
-            "x": 768.0,
-            "y": 768.0,
-            "width": 256.0,
-            "height": 128.0,
+            "x": 384.0,
+            "y": 384.0,
+            "width": 128.0,
+            "height": 64.0,
             "type": "Text Display",
             "properties": {
               "topic": "/SmartDashboard/Pivot Position",
@@ -187,9 +187,9 @@
           {
             "title": "Coral in Intake",
             "x": 0.0,
-            "y": 768.0,
-            "width": 256.0,
-            "height": 128.0,
+            "y": 384.0,
+            "width": 128.0,
+            "height": 64.0,
             "type": "Boolean Box",
             "properties": {
               "topic": "/SmartDashboard/Coral Detected",
@@ -203,10 +203,10 @@
           },
           {
             "title": "Coral in Outtake",
-            "x": 256.0,
-            "y": 768.0,
-            "width": 256.0,
-            "height": 128.0,
+            "x": 128.0,
+            "y": 368.0,
+            "width": 128.0,
+            "height": 64.0,
             "type": "Boolean Box",
             "properties": {
               "topic": "/SmartDashboard/Dump Roller Has Coral",
